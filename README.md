@@ -1,16 +1,10 @@
-# task_management_app
+Task Management App
 
-A new Flutter project.
+A simple and responsive task management app built using Flutter and Riverpod for state management. This app allows users to add, update, and delete tasks efficiently.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Instructions:
+✅ Click on the floating ➕ button to create a new task
+✅ In the add task screen add the title and description then click on the Add Task button to create the task
+✅ Delete the task by clicking on the delete icon in the task card and confirm the delete in the dialog box
+✅ To update the task click on the pensil button you will redirect to the task edit screen
+✅ In the Task Edit screen add the title and description then click on the Save Changes button
