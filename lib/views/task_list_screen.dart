@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_management_app/viewmodels/task_provider.dart';
+import 'package:task_management_app/views/task_edit_screen.dart';
 import 'add_task_screen.dart';
 
 class TaskListScreen extends ConsumerStatefulWidget {
@@ -35,31 +36,16 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
       ),
       body: tasks.isEmpty
           ? _buildEmptyState(screenWidth)
-          : LayoutBuilder(
-              builder: (context, constraints) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth > 600 ? 40 : 10),
-                  child: screenWidth > 600
-                      ? GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 1.6,
-                          ),
-                          itemCount: tasks.length,
-                          itemBuilder: (context, index) =>
-                              _buildTaskCard(tasks[index]),
-                        )
-                      : ListView.builder(
-                          itemCount: tasks.length,
-                          itemBuilder: (context, index) =>
-                              _buildTaskCard(tasks[index]),
-                        ),
-                );
-              },
+          : Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: screenWidth > 600 ? 40 : 10),
+              child: ListView.builder(
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  final task = tasks[index];
+                  return _buildTaskCard(task);
+                },
+              ),
             ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepPurple,
@@ -100,19 +86,63 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
           task.description,
           style: TextStyle(fontSize: 14, color: Colors.grey[700]),
         ),
-        trailing: Transform.scale(
-          scale: 1.3,
-          child: Checkbox(
-            shape: CircleBorder(),
-            activeColor: Colors.deepPurple,
-            value: task.isCompleted,
-            onChanged: (value) {
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+              shape: CircleBorder(),
+              activeColor: Colors.deepPurple,
+              value: task.isCompleted,
+              onChanged: (value) {
+                ref
+                    .read(taskViewModelProvider.notifier)
+                    .updateTask(task.copyWith(isCompleted: value));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.edit, color: Colors.blue),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditTaskScreen(task: task),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.redAccent),
+              onPressed: () {
+                _confirmDelete(context, task.id!);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, int taskId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Task"),
+        content: Text("Are you sure you want to delete this task?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
               ref
                   .read(taskViewModelProvider.notifier)
-                  .updateTask(task.copyWith(isCompleted: value));
+                  .deleteTask(taskId as int);
+              Navigator.pop(context);
             },
+            child: Text("Delete", style: TextStyle(color: Colors.red)),
           ),
-        ),
+        ],
       ),
     );
   }
