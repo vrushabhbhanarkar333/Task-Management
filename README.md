@@ -20,3 +20,7 @@ A simple and responsive task management app built using Flutter and Riverpod for
 2. Clone the repository in the local folder 
 3. Install all the dependencies using a command - flutter pub get
 4. Run the flutter app using a command - flutter run
+
+
+
+........
